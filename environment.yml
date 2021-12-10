@@ -1,0 +1,15 @@
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.7.3
+  - pip
+  - pip:
+    - numpy
+    - flask
+    - jinja2
+    - flask-cors
+    - scikit-image
+    - torch==1.3.0
+    - torchvision==0.4.1
+    - IPython

@@ -1,0 +1,540 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">{{ jscolor_script }}</script>
+    <script type="text/javascript">{{ index_script }}</script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script> -->
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">	
+
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body id="{{ ds }}">
+    <header>
+        <h1 class="l--page">Classifier Forensic Tool in Your Browser.</h1>
+    </header>
+
+    <div id="top-controls">
+        <div class="container l--page">
+
+            <div class="control">
+                <label for="Classifier">Classifier</label>
+                <div class="select">
+                    <select id="clfselector">
+                      <option value="ImageNet Clean" selected>ImageNet Clean</option>
+                      <option value="ImageNet Poisoned">ImageNet Poisoned</option>
+                      <option value="TrojAI Clean" selected>TrojAI Clean</option>
+                      <option value="TrojAI Poisoned">TrojAI Poisoned</option> 
+                    </select>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Epsilon">Perturbation Strength</label>
+                <div class="slidecontainer">
+                    <input type="range" value="30" min="0" max="120" step="5" class="mdl-slider mdl-js-slider" id="epsilon">
+                    <label for="Value">Value: <span id="demo"></span></label>
+                </div>
+            </div>
+
+            <div style="display:flex;">
+                <div class="control">
+                    <div class="targets">
+                        <label class="ui-showTestData mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="ifTargeted">
+                            <input type="checkbox" id="ifTargeted" class="mdl-checkbox__input">
+                            <span class="mdl-checkbox__label label">Targeted</span>
+                        </label>
+                    </div>
+
+                    <div class="targets">
+                        <span class="target-note">Choose targets:<span>
+                        <div class="select">
+                            <select id="targetClass">
+                                <option value="0" selected>0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Image">Clean Image<label>
+                <div>
+                    <button type="button"
+                        class="btn btn-outline-primary imgbutton mdl-button mdl-js-button mdl-button--icon">
+                        Load
+                    </button>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Generate Adv">Generate Adv</label>
+                <div class="generate-button-meta">
+                    <button type="button" class="btn btn-outline-primary setanchor mdl-button mdl-js-button mdl-button--icon">
+                    Generate
+                    </button>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Reset">Reset</label>
+                <div class="generate-button-meta">
+                    <button type="button" class="btn btn-outline-primary resetanchor mdl-button mdl-js-button mdl-button--icon">
+                    Reset
+                    </button> 
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- <div id="main-part"> -->
+        <div id="main-panel" class="l--page">
+            <div class="column">
+                <h4>Clean Example (5x5)</h4>
+                <div id="clean-column">
+                    <div class="cleanclass">
+                        Label 0
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_1_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_1_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_1_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_1_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_1_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                                            
+                    <div class="cleanclass">
+                        Label 1
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_2_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_2_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_2_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_2_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_2_example_5" width="95" height="95"> </canvas>   
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+
+                    <div class="cleanclass">
+                        Label 2
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_3_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_3_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_3_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_3_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_3_example_5" width="95" height="95"> </canvas>   
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+
+                    <div class="cleanclass">
+                        Label 3
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_4_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_4_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_4_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_4_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_4_example_5" width="95" height="95"> </canvas>   
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+
+                    <div class="cleanclass">
+                        Label 4
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_5_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_5_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_5_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_5_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>
+                    <div class="clean">
+                        <canvas class="cleanCanvas" id="clean_class_5_example_5" width="95" height="95"> </canvas>   
+                        <span>predicted: <span class="clean_prediction"></span></span>
+                    </div>        
+                </div>
+            </div>
+
+            <div class="column">
+                <h4>Adv Example (5x5)</h4>
+                <div id="adv-column">
+                    <div class="adversarialclass">
+                        Label 0
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_1_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_1_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_1_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_1_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_1_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+
+                    <div class="adversarialclass">
+                        Label 1
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_2_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_2_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_2_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_2_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_2_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+
+                    <div class="adversarialclass">
+                        Label 2
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_3_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_3_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_3_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_3_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_3_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+
+                    <div class="adversarialclass">
+                        Label 3
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_4_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_4_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_4_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_4_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_4_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+
+                    <div class="adversarialclass">
+                        Label 4
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_5_example_1" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_5_example_2" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_5_example_3" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_5_example_4" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="advCanvas" id="adv_class_5_example_5" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="adv_prediction"></span></span>
+                    </div>
+                </div>
+            </div>
+        <!-- </div> -->
+
+        <div id="myModal" class="modal">
+            <span class="close">&times;</span>
+            <!-- <img class="modal-content" id="img01"> -->
+            <canvas class="modal-content" id="img01" width="500" height="500"> </canvas>
+            <div id="color-status"></div>
+        </div>
+    </div>
+
+    <div id="bottom-controls">
+        <div class="container">
+            <div class="control">
+                <label for="Image">Clean Image<label>
+                <div>
+                    <button type="button"
+                        class="btn btn-outline-primary mdl-button mdl-js-button mdl-button--icon sampleImage">
+                        Load
+                    </button>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Patch Option">Patch Option</label>
+                <div class="select">
+                    <select id="patchselector">
+                      <option value="color patch" selected>color patch</option>
+                      <option value="cropped patch">cropped patch</option>
+                      <!-- <option value="brush">brush</option> -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="control" id="control-color-selector">
+                <label for="Color Selector">Color Selector (Used Only for Color Patch)</label>
+                <input class="jscolor colorbutton btn" id="colorpicker" value="ab2567">
+            </div>
+
+            <div class="control">
+                <label for="Apply">Apply<label>
+                <div>
+                    <button type="button"
+                        class="btn btn-outline-primary mdl-button mdl-js-button mdl-button--icon apply-button">
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <div class="control">
+                <label for="Predict">Predict<label>
+                <div>
+                    <button type="button"
+                        class="btn btn-outline-primary mdl-button mdl-js-button mdl-button--icon predict-button">
+                        Predict
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div>
+        <div id="main-panel-2" class="l--page">
+            <div class="column">
+                <div>
+                    <canvas id="baseCanvas" width="450" height="450"> </canvas>    
+                </div>
+            </div>
+    
+            <div class="column">
+                <div id="poison-column">
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+        
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+        
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+        
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+        
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas>    
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div>
+                    <div class="adversarial">
+                        <canvas class="poisonCanvas" width="95" height="95"> </canvas> 
+                        <span>predicted: <span class="poison_prediction"></span></span>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Optional JavaScript -->
+<!-- Popper.js, then Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
